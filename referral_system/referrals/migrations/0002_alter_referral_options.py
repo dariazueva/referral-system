@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('referrals', '0001_initial'),
+        ("referrals", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='referral',
-            options={'verbose_name': 'Реферал', 'verbose_name_plural': 'Рефералы'},
+            name="referral",
+            options={"verbose_name": "Реферал", "verbose_name_plural": "Рефералы"},
         ),
     ]

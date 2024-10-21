@@ -1,19 +1,19 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from .models import ReferralCode, Referral
+from .models import Referral, ReferralCode
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ["id", "username", "email"]
 
 
 class ReferralCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReferralCode
-        fields = ['user', 'code', 'expires_at']
+        fields = ["user", "code", "expires_at"]
 
 
 class ReferralSerializer(serializers.ModelSerializer):
@@ -21,4 +21,4 @@ class ReferralSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Referral
-        fields = ['referrer', 'referred', 'created_at']
+        fields = ["referrer", "referred", "created_at"]
