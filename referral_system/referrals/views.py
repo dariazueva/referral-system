@@ -81,3 +81,15 @@ class ReferralViewSet(APIView):
             return Response(
                 {"detail": "Invalid referral code."}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+class ReferralListViewSet(APIView):
+
+    async def get(self, request, referrer_id):
+        try:
+            referrer = await sync_to_async(CustomUser.objects.get)(id=referrer_id)
+            referrals = await sync_to_async(lambda: list(referrer.referrals.all()))()
+            serializer = await sync_to_async(lambda: ReferralSerializer(referrals, many=True).data)()
+            return Response(serializer)
+        except CustomUser.DoesNotExist:
+            return Response({'detail': 'Referrer not found.'}, status=status.HTTP_404_NOT_FOUND)
