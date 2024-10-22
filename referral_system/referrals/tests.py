@@ -7,46 +7,46 @@ from rest_framework.test import APIClient
 from .models import CustomUser, Referral, ReferralCode
 
 
-# class ReferralCodeTests(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.user = CustomUser.objects.create_user(
-#             username="testuser", email="test@example.com", password="password123"
-#         )
-#         self.client.force_authenticate(user=self.user)
-#
-#     def test_create_referral_code(self):
-#         response = self.client.post(reverse("create_referral_code"))
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertIn("code", response.data)
-#         self.assertEqual(ReferralCode.objects.count(), 1)
-#
-#     def test_create_referral_code_existing_code(self):
-#         ReferralCode.objects.create(
-#             user=self.user,
-#             code="EXISTINGCODE",
-#             expires_at=timezone.now() + timezone.timedelta(days=7),
-#         )
-#         response = self.client.post(reverse("create_referral_code"))
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertNotEqual(response.data["code"], "EXISTINGCODE")
-#         self.assertEqual(ReferralCode.objects.count(), 1)
-#
-#     def test_delete_referral_code(self):
-#         ReferralCode.objects.create(
-#             user=self.user,
-#             code="EXISTINGCODE",
-#             expires_at=timezone.now() + timezone.timedelta(days=7),
-#         )
-#         response = self.client.delete(reverse("create_referral_code"))
-#         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-#         self.assertEqual(ReferralCode.objects.count(), 0)
-#
-#     def test_delete_non_existent_referral_code(self):
-#         response = self.client.delete(reverse("create_referral_code"))
-#         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-#         self.assertEqual(response.data["detail"], "No active referral code found.")
-#
+class ReferralCodeTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = CustomUser.objects.create_user(
+            username="testuser", email="test@example.com", password="password123"
+        )
+        self.client.force_authenticate(user=self.user)
+
+    def test_create_referral_code(self):
+        response = self.client.post(reverse("create_referral_code"))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn("code", response.data)
+        self.assertEqual(ReferralCode.objects.count(), 1)
+
+    def test_create_referral_code_existing_code(self):
+        ReferralCode.objects.create(
+            user=self.user,
+            code="EXISTINGCODE",
+            expires_at=timezone.now() + timezone.timedelta(days=7),
+        )
+        response = self.client.post(reverse("create_referral_code"))
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertNotEqual(response.data["code"], "EXISTINGCODE")
+        self.assertEqual(ReferralCode.objects.count(), 1)
+
+    def test_delete_referral_code(self):
+        ReferralCode.objects.create(
+            user=self.user,
+            code="EXISTINGCODE",
+            expires_at=timezone.now() + timezone.timedelta(days=7),
+        )
+        response = self.client.delete(reverse("create_referral_code"))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(ReferralCode.objects.count(), 0)
+
+    def test_delete_non_existent_referral_code(self):
+        response = self.client.delete(reverse("create_referral_code"))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data["detail"], "No active referral code found.")
+
 
 class ReferralTests(TestCase):
     def setUp(self):
@@ -64,10 +64,6 @@ class ReferralTests(TestCase):
             username="referreduser",
             email="referred@example.com",
             password="password123",
-        )
-        self.referral = Referral.objects.create(
-            referrer=self.referrer,
-            referred=self.referred_user,
         )
         self.referral_code = ReferralCode.objects.create(
             user=self.referrer,
@@ -126,6 +122,10 @@ class ReferralTests(TestCase):
         self.assertEqual(Referral.objects.count(), 0)
 
     def test_get_referrals_by_referrer(self):
+        self.referral = Referral.objects.create(
+            referrer=self.referrer,
+            referred=self.referred_user,
+        )
         response = self.client.get(reverse("get_referrals", args=[self.referrer.id]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)

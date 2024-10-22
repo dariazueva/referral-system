@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Referral, ReferralCode, CustomUser
+from .models import CustomUser, Referral, ReferralCode
 
 
 class UserSerializer(serializers.ModelSerializer):

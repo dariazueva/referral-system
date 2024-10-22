@@ -70,6 +70,14 @@ class ReferralViewSet(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             referrer = await sync_to_async(lambda: referrer_code.user)()
+            referral_exists = await sync_to_async(
+                Referral.objects.filter(referrer=referrer, referred=request.user).exists
+            )()
+            if referral_exists:
+                return Response(
+                    {"detail": "Referral already exists."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             await sync_to_async(Referral.objects.create)(
                 referrer=referrer, referred=request.user
             )
@@ -89,7 +97,11 @@ class ReferralListViewSet(APIView):
         try:
             referrer = await sync_to_async(CustomUser.objects.get)(id=referrer_id)
             referrals = await sync_to_async(lambda: list(referrer.referrals.all()))()
-            serializer = await sync_to_async(lambda: ReferralSerializer(referrals, many=True).data)()
+            serializer = await sync_to_async(
+                lambda: ReferralSerializer(referrals, many=True).data
+            )()
             return Response(serializer)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'Referrer not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Referrer not found."}, status=status.HTTP_404_NOT_FOUND
+            )
