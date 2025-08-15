@@ -64,7 +64,7 @@ pip install -r requirements.txt
 POSTGRES_DB=referral_db
 POSTGRES_USER=referral_user
 POSTGRES_PASSWORD=referral_pas
-DB_HOST=localhost
+DB_HOST=db
 DB_PORT=5434
 ```
 
